@@ -1,0 +1,25 @@
+{
+  "hash": "ca495e59",
+  "configHash": "4d580a09",
+  "lockfileHash": "306e04e4",
+  "browserHash": "aaaa9b2b",
+  "optimized": {
+    "expr-eval": {
+      "src": "../../../../../../../../node_modules/.pnpm/expr-eval@2.0.2/node_modules/expr-eval/dist/index.mjs",
+      "file": "expr-eval.js",
+      "fileHash": "009d8f64",
+      "needsInterop": false
+    },
+    "lodash.debounce": {
+      "src": "../../../../../../../../node_modules/lodash.debounce/index.js",
+      "file": "lodash__debounce.js",
+      "fileHash": "411c6ec3",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-Y2F7D3TJ": {
+      "file": "chunk-Y2F7D3TJ.js"
+    }
+  }
+}
