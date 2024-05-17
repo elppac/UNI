@@ -34,7 +34,7 @@ const exprParse = (expression: string) => {
 	return parser.parse(expr);
 };
 
-export default (Component:any) => {
+export default (Component: any) => {
 	return defineComponent({
 		inheritAttrs: false,
 		setup(_, { attrs, slots }: { [key: string]: any }) {
@@ -47,42 +47,34 @@ export default (Component:any) => {
 			const request = async (key: string, params: any) => {
 				const isMock = ENV.VITE_MOCK === 'true';
 				const serviceData = attrs[key].value;
-				const data:any = { json: params, projectCode: 'f854e13238d74a95bbf5159e228c9c61'};
+				const data: any = { json: params, projectCode: 'f854e13238d74a95bbf5159e228c9c61' };
 				let url = `${ENV.VITE_API_URL}/service/${serviceData.name}`;
 				if (isMock) {
 					url = `${ENV.VITE_MOCK_URL}/service/${serviceData.name}`;
-					data.$mock = serviceData 
+					data.$mock = serviceData;
 				}
-				// const headers = new Headers();
-				
-				//   headers.append('Content-Type', 'application/json');
-				//   headers.append('Accept', 'application/json');
-				
-				//   headers.append('Access-Control-Allow-Origin', 'http://localhost:3000');
-				//   headers.append('Access-Control-Allow-Credentials', 'true');
 				const response = await fetch(url, {
 					method: 'POST', // *GET, POST, PUT, DELETE, etc.
 					mode: 'cors', // no-cors, *cors, same-origin
 					cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
 					// credentials: 'same-origin', // include, *same-origin, omit
 					headers: {
-						'Accept': 'application/json',
+						Accept: 'application/json',
 						'Content-Type': 'application/json',
 						// 'Access-Control-Allow-Origin': 'http://localhost:5173',
-						'Access-Control-Allow-Credentials': 'true',
+						'Access-Control-Allow-Credentials': 'true'
 					},
 					redirect: 'follow',
 					referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-					body: JSON.stringify(data),
+					body: JSON.stringify(data)
 				});
 
 				const res = await response.json();
-				service.value = { ...service.value, [key]:  {data: res.data, params} };
-			
+				service.value = { ...service.value, [key]: { data: res.data, params } };
 			};
 
-			const events = (Component.emits || []).reduce((pre:any, cur:any) => {
-				pre[`on${cur[0].toUpperCase()}${cur.slice(1)}`] = (v:any) => {
+			const events = (Component.emits || []).reduce((pre: any, cur: any) => {
+				pre[`on${cur[0].toUpperCase()}${cur.slice(1)}`] = (v: any) => {
 					const [type, key] = cur.split(':');
 					if (type && key) {
 						if (type === 'update') {
@@ -109,7 +101,7 @@ export default (Component:any) => {
 						processor: watch(
 							() => {
 								const service = attrs[i].value;
-								const params = service.params.map((p:any) => {
+								const params = service.params.map((p: any) => {
 									if (p.dataType === 'model') {
 										return p.struture
 											.map((s: any) => {
@@ -164,6 +156,9 @@ export default (Component:any) => {
 			};
 
 			const wrapperRender = () => {
+				if (props.visible === false || computer.some((i) => i.key === 'visible' && i.value === false)) {
+					return null;
+				}
 				if (props.click) {
 					return h(
 						'div',
@@ -179,7 +174,7 @@ export default (Component:any) => {
 				}
 			};
 
-			return () => coreRender();
+			return () => wrapperRender();
 		}
 	});
 };
