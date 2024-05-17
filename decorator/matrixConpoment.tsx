@@ -2,9 +2,10 @@ import { computed, defineComponent, h, inject, watch, ref } from 'vue';
 import { Parser } from 'expr-eval';
 import debounce from 'lodash.debounce';
 
+const ENV = (import.meta as any).env;
 
 const parser = new Parser();
-parser.functions.CONCAT = function (...args) {
+parser.functions.CONCAT = function (...args: any) {
 	return String.prototype.concat(...args);
 };
 
@@ -13,16 +14,19 @@ const exprParse = (expression: string) => {
 	if (/^`.*?\${(.*?).*?`$/.test(expr)) {
 		const vars = expr.match(/\$\{(.*?)\}/g);
 		let exprStr = expr.substring(1, expr.length - 1);
-		const exprKeys = [];
-		vars.forEach((i, idx) => {
+		const exprKeys: string[] = [];
+		(vars ?? []).forEach((i: string, idx) => {
 			const [left, ...right] = exprStr.split(i);
 			if (left) {
 				exprKeys.push(`'${left}'`);
 			}
-			exprKeys.push(i.match(/\$\{(.*?)\}/)[1]);
-			exprStr = right.join(i);
-			if (idx === vars.length - 1) {
-				exprKeys.push(`'${right[0]}'`);
+			const m = (i as string).match(/\$\{(.*?)\}/);
+			if (m) {
+				exprKeys.push(m && m[1]);
+				exprStr = right.join(i);
+				if (idx === (vars as string[]).length - 1) {
+					exprKeys.push(`'${right[0]}'`);
+				}
 			}
 		});
 		expr = `CONCAT(${exprKeys.join(',')})`;
@@ -30,26 +34,55 @@ const exprParse = (expression: string) => {
 	return parser.parse(expr);
 };
 
-export default (Component) => {
+export default (Component:any) => {
 	return defineComponent({
 		inheritAttrs: false,
 		setup(_, { attrs, slots }: { [key: string]: any }) {
-			const props = { ...attrs, 'data-row': attrs  };
-			delete props.id
+			const props = { ...attrs, 'data-row': attrs };
+			delete props.id;
 			const pageStore: any = inject('page');
-			const computer = [];
-			const watcher = {};
+			const computer: any[] = [];
+			const watcher: any = {};
 			const service = ref({});
 			const request = async (key: string, params: any) => {
-				const data = {
-					params,
-					data: [{ label: 'hello', value: 1 }]
-				};
-				service.value = { ...service.value, [key]: data };
+				const isMock = ENV.VITE_MOCK === 'true';
+				const serviceData = attrs[key].value;
+				const data:any = { json: params, projectCode: 'f854e13238d74a95bbf5159e228c9c61'};
+				let url = `${ENV.VITE_API_URL}/service/${serviceData.name}`;
+				if (isMock) {
+					url = `${ENV.VITE_MOCK_URL}/service/${serviceData.name}`;
+					data.$mock = serviceData 
+				}
+				// const headers = new Headers();
+				
+				//   headers.append('Content-Type', 'application/json');
+				//   headers.append('Accept', 'application/json');
+				
+				//   headers.append('Access-Control-Allow-Origin', 'http://localhost:3000');
+				//   headers.append('Access-Control-Allow-Credentials', 'true');
+				const response = await fetch(url, {
+					method: 'POST', // *GET, POST, PUT, DELETE, etc.
+					mode: 'cors', // no-cors, *cors, same-origin
+					cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+					// credentials: 'same-origin', // include, *same-origin, omit
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+						// 'Access-Control-Allow-Origin': 'http://localhost:5173',
+						'Access-Control-Allow-Credentials': 'true',
+					},
+					redirect: 'follow',
+					referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+					body: JSON.stringify(data),
+				});
+
+				const res = await response.json();
+				service.value = { ...service.value, [key]:  {data: res.data, params} };
+			
 			};
 
-			const events = (Component.emits || []).reduce((pre, cur) => {
-				pre[`on${cur[0].toUpperCase()}${cur.slice(1)}`] = (v) => {
+			const events = (Component.emits || []).reduce((pre:any, cur:any) => {
+				pre[`on${cur[0].toUpperCase()}${cur.slice(1)}`] = (v:any) => {
 					const [type, key] = cur.split(':');
 					if (type && key) {
 						if (type === 'update') {
@@ -64,19 +97,19 @@ export default (Component) => {
 
 			for (const i in attrs) {
 				if (attrs[i].type === 'expression') {
-					delete props[i]
+					delete props[i];
 					computer.push({
 						key: i,
 						computed: computed(() => exprParse(attrs[i].value).evaluate({ ...pageStore.data }))
 					});
 				} else if (attrs[i].type === 'request') {
-					delete props[i]
+					delete props[i];
 					watcher[i] = {
 						// 处理器, 用来组织入参
 						processor: watch(
 							() => {
 								const service = attrs[i].value;
-								const params = service.params.map((p) => {
+								const params = service.params.map((p:any) => {
 									if (p.dataType === 'model') {
 										return p.struture
 											.map((s: any) => {
@@ -135,7 +168,9 @@ export default (Component) => {
 					return h(
 						'div',
 						{
-							onClick: () => { console.log('这里实现你的click')}
+							onClick: () => {
+								console.log('这里实现你的click');
+							}
 						},
 						coreRender()
 					);
@@ -144,7 +179,7 @@ export default (Component) => {
 				}
 			};
 
-			return () => wrapperRender();
+			return () => coreRender();
 		}
 	});
 };

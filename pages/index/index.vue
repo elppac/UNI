@@ -4,27 +4,27 @@
 		<view class="text-area">
 			<text class="title">{{ title }}</text>
 		</view>
-		
+
 		<view style="text-align: left">
-		<view>
-			<text>{{ parser.parse('$global.total').evaluate({ $global: store }) }}</text>
-		</view>
-		<view>
-			<text>{{ parser.parse('$global.getCartCountById($entry.id)').evaluate({ $global: store, $entry }) }}</text>
-		</view>
-		<view>
-			<!-- <text>total: {{ store.total }}</text>
+			<view>
+				<text>{{ parser.parse('$global.total').evaluate({ $global: store }) }}</text>
+			</view>
+			<view>
+				<text>{{ parser.parse('$global.getCartCountById($entry.id)').evaluate({ $global: store, $entry }) }}</text>
+			</view>
+			<view>
+				<!-- <text>total: {{ store.total }}</text>
 			<button type="primary" @click="store.toCart(3, 4)">添加ID:3, 数量:4</button> -->
-			<text>ID 1 Count: {{ store.getCartCountById(1) }}</text>
-			<button @click="store.toCart(1, store.getCartCountById(1) + 1)">添加ID:1, 数量:+1</button>
-		</view>
-		<view>
-			<text>ID 2 Count: {{ store.getCartCountById(2) }}</text>
-		</view>
-		<view>
-			<text>ID 3 Count: {{ store.getCartCountById(3) }}</text>
-			<button @click="store.toCart(3, store.getCartCountById(3) + 1)">添加ID:3, 数量:+1</button>
-		</view>
+				<text>ID 1 Count: {{ store.getCartCountById(1) }}</text>
+				<button @click="store.toCart(1, store.getCartCountById(1) + 1)">添加ID:1, 数量:+1</button>
+			</view>
+			<view>
+				<text>ID 2 Count: {{ store.getCartCountById(2) }}</text>
+			</view>
+			<view>
+				<text>ID 3 Count: {{ store.getCartCountById(3) }}</text>
+				<button @click="store.toCart(3, store.getCartCountById(3) + 1)">添加ID:3, 数量:+1</button>
+			</view>
 			<MInput id="$input" :click="{}"></MInput>
 			<MText id="$text01" :content="{ type: 'expression', value: '`Text: ${$input.value} USD`' }" :dataSource="dataSourceConfig"></MText>
 		</view>
@@ -82,13 +82,14 @@ console.log(exprParse('`${$entry.currency} ${$entry.price}`').evaluate({ $entry:
 const dataSourceConfig = {
 	type: 'request',
 	value: {
-		name: 'testRequest',
+		name: 'txlHomePage',
 		params: [
 			{
 				dataType: 'model',
 				struture: [{ name: 'keywords', value: { value: '$input.value', type: 'value' } }, { name: 'category' }]
 			}
-		]
+		],
+		returns: { dataType: 'model', name: 'HomePage', sourceId: 'HomePage' }
 	}
 };
 
