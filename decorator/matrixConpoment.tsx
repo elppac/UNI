@@ -41,6 +41,7 @@ export default (Component: any) => {
 			const props = { ...attrs, 'data-row': attrs };
 			delete props.id;
 			const pageStore: any = inject('page');
+			const globalStore: any = inject('globalStore')
 			const computer: any[] = [];
 			const watcher: any = {};
 			const service = ref({});
@@ -92,7 +93,7 @@ export default (Component: any) => {
 					delete props[i];
 					computer.push({
 						key: i,
-						computed: computed(() => exprParse(attrs[i].value).evaluate({ ...pageStore.data }))
+						computed: computed(() => exprParse(attrs[i].value).evaluate({ ...pageStore.data, $ctx: globalStore }))
 					});
 				} else if (attrs[i].type === 'request') {
 					delete props[i];

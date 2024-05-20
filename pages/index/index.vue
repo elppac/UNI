@@ -42,6 +42,7 @@ import matrixConpoment from '../../decorator/matrixConpoment';
 import { usePageStore } from '../../stores/page';
 // eval('alert(1)')
 const store = useGlobalStore();
+provide('globalStore', store)
 provide('page', usePageStore());
 
 const MInput = matrixConpoment(MatrixInput);

@@ -5,14 +5,17 @@ export const useGlobalStore = defineStore('global', {
 		return {
 			total: 5,
 			carts: [
-				{ id: 1, count: 2 },
-				{ id: 2, count: 3 }
+				{ id: 1, count: 2, cid: 2 },
+				{ id: 2, count: 3, cid: 2 }
 			]
 		};
 	},
 	getters: {
 		getCartCountById: (state) => {
 			return (id: number): number => state.carts.find((cart) => cart.id === id)?.count || 0;
+		},
+		getCartCategoryById: (state) => {
+			return () => {};
 		}
 	},
 	actions: {
