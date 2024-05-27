@@ -1,0 +1,1 @@
+<view class="content"><image class="logo" src="/static/logo.png"></image><view class="text-area"><text class="title">{{a}}</text></view><view style="text-align:left"><matrix-field wx:if="{{b}}" id="container" u-i="4478234d-0" bind:__l="__l" u-p="{{b}}"/></view></view>

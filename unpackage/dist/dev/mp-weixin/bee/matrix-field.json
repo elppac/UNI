@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "matrix-container": "../components/matrix-container",
+    "matrix-input": "../components/matrix-input",
+    "matrix-text": "../components/matrix-text"
+  }
+}

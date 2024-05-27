@@ -1,0 +1,1 @@
+<view style="{{c}}"><block wx:if="{{a}}"><block wx:for="{{b}}" wx:for-item="i" wx:key="d"><matrix-field wx:if="{{i.c}}" id="{{i.a}}" u-i="{{i.b}}" bind:__l="__l" u-p="{{i.c}}"/></block></block></view>

@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "matrix-field": "../bee/matrix-field"
+  }
+}

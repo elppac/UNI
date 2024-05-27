@@ -1,0 +1,1 @@
+<input focus v-bind="{{a}}" value="{{b}}" bindinput="{{c}}"/>

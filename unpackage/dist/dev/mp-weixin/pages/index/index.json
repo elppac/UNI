@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "uni-app",
+  "usingComponents": {
+    "matrix-field": "../../bee/matrix-field"
+  }
+}
